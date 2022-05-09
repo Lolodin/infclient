@@ -2,18 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/Lolodin/infclient/internal/object"
+	"github.com/hajimehoshi/ebiten/v2"
 	_ "github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
-	"image"
 	"image/color"
 	_ "image/png"
 	"log"
-
-	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 const (
@@ -21,21 +20,11 @@ const (
 	screenHeight = 240
 )
 
-var (
-	runnerImage *ebiten.Image
-)
-
 type Game struct {
-	Login image.Rectangle
-	count int
+	Login object.Objecter
 }
 
-func (g *Game) Update() error {
-	g.count++
-	return nil
-}
-
-func (g *Game) Draw(screen *ebiten.Image) {
+func NewGame() *Game {
 	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
 	if err != nil {
 		log.Fatal(err)
@@ -47,16 +36,23 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		DPI:     78,
 		Hinting: font.HintingFull,
 	})
+	obj := object.NewObject(text.BoundString(mplusNormalFont, "Login"), screenWidth/2.5, screenHeight/3)
+	obj.Font = mplusNormalFont
+	obj.Clr = color.White
+	obj.Label = "Login"
+	return &Game{Login: obj}
+}
 
-	g.Login = text.BoundString(mplusNormalFont, "Login")
-	text.Draw(screen, "Login", mplusNormalFont, screenWidth/2, screenHeight/3, color.White)
+func (g *Game) Update() error {
+	return nil
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	text.Draw(screen, g.Login.GetLabel(), g.Login.GetFont(), g.Login.GetX(), g.Login.GetY(), g.Login.GetColor())
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-		x, y := ebiten.CursorPosition()
-
-		if g.Login.RGBA64At(x-screenWidth/2, y-screenHeight/3).A > 0 {
+		if g.Login.In(ebiten.CursorPosition()) {
 			fmt.Print("click")
 		}
-
 	}
 }
 
@@ -67,7 +63,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func main() {
 	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
 	ebiten.SetWindowTitle("Endor")
-	if err := ebiten.RunGame(&Game{}); err != nil {
+	if err := ebiten.RunGame(NewGame()); err != nil {
 		log.Fatal(err)
 	}
 }

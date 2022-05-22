@@ -3,52 +3,69 @@ package lang
 import (
 	"embed"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
+	"io"
+	"os"
 )
 
 var FS embed.FS
 
 type Translator struct {
 	Lang       language.Tag
-	localizers map[language.Tag]*i18n.Localizer
+	localizers map[language.Tag]words
 }
+
+type words map[string]string
 
 func NewTranslator() *Translator {
 	t := &Translator{}
-	t.localizers = map[language.Tag]*i18n.Localizer{}
+	t.localizers = map[language.Tag]words{}
 	return t
 }
 
 // Добавить новую локализацию в транслатор
 func (t *Translator) AddLocalizer(path string, lang language.Tag) error {
 	// Load translation file
-	file, err := FS.ReadFile(path)
+	file, err := os.Open(path)
+	defer file.Close()
 	if err != nil {
 		return fmt.Errorf("loading '%s' translation: %s", lang.String(), err)
 	}
-
-	bundle := i18n.NewBundle(lang)
-	bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
-	_, err = bundle.ParseMessageFileBytes(file, path)
+	buff, err := io.ReadAll(file)
 	if err != nil {
-		return err
+		return fmt.Errorf("loading '%s' translation: %s", lang.String(), err)
 	}
-
-	t.localizers[lang] = i18n.NewLocalizer(bundle, lang.String())
+	w := words{}
+	json.Unmarshal(buff, &w)
+	t.localizers[lang] = w
 
 	return nil
 }
 
-func (t Translator) TransData(str string, data interface{}) (string, error) {
-	translation, err := t.localizers[t.Lang].Localize(&i18n.LocalizeConfig{
-		MessageID:    str,
-		TemplateData: data,
-	})
-	if err != nil {
-		return "", fmt.Errorf("translating string '%s' with data: %s", str, err)
+func (t Translator) Trans(str string) (string, error) {
+	translation, ok := t.localizers[t.Lang]
+	if !ok {
+		return "", fmt.Errorf("translating string '%s'", str)
 	}
 
-	return translation, nil
+	if word, ok := translation[str]; ok {
+		return word, nil
+	}
+
+	return "", errors.New("word is not found")
+}
+
+func (t Translator) TransWithOut(str string) string {
+	translation, ok := t.localizers[t.Lang]
+	if !ok {
+		return ""
+	}
+
+	if word, ok := translation[str]; ok {
+		return word
+	}
+
+	return ""
 }

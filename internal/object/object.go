@@ -1,4 +1,4 @@
-package object
+package component
 
 import (
 	"golang.org/x/image/font"

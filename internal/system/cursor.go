@@ -12,10 +12,7 @@ type cursorSystem struct {
 
 func NewCursorSystem(s *kernel.State) *cursorSystem {
 	sys := &cursorSystem{}
-	sys.Components = []string{
-		"Cursor",
-		"Position",
-	}
+
 	return sys
 }
 
@@ -32,9 +29,9 @@ func (sys *cursorSystem) Update(s *kernel.State) {
 func (sys *cursorSystem) Draw(s *kernel.State, creen *ebiten.Image) {}
 
 func (sys *cursorSystem) Enter(s *kernel.State) {
-	ebiten.SetCursorMode(ebiten.CursorModeHidden)
+
 }
 
 func (sys *cursorSystem) Exit(s *kernel.State) {
-	ebiten.SetCursorMode(ebiten.CursorModeVisible)
+
 }

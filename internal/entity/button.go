@@ -22,6 +22,7 @@ func NewButtonEntity(options *ButtonEntityOptions) (*Entity, error) {
 
 	e.Position = &component.PositionComponent{X: options.X, Y: options.Y}
 	e.Size = &component.SizeComponent{Width: options.Width, Height: options.Height}
+	e.Interactive = component.NewInteractiveComponent()
 
 	// No text
 	if options.Text == "" {

@@ -1,21 +1,32 @@
 package main
 
 import (
+	"github.com/Lolodin/infclient/internal/interactive"
+	"github.com/Lolodin/infclient/internal/kernel"
 	"github.com/hajimehoshi/ebiten/v2"
 	_ "github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"golang.org/x/text/language"
 	_ "image/png"
 	"log"
 )
 
 const (
-	screenWidth  = 320
-	screenHeight = 240
+	screenWidth  = 620
+	screenHeight = 540
 )
+const MainMenu = "main"
 
 func main() {
-	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
-	ebiten.SetWindowTitle("Endor")
-	if err := ebiten.RunGame(NewGame()); err != nil {
-		log.Fatal(err)
+	game := kernel.NewState(kernel.Options{
+		Title:        "test",
+		RenderHeight: screenHeight,
+		RenderWidth:  screenWidth,
+	}, language.Russian)
+
+	game.LoadWorld(interactive.NewTitleWorld(game))
+	game.ActivateWorlds(MainMenu)
+	err := ebiten.RunGame(game)
+	if err != nil {
+		log.Fatalln(err)
 	}
 }

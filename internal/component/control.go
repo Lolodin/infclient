@@ -20,5 +20,6 @@ const (
 	ControlDown
 	ControlMenu
 	ControlDebug
-	ControlClick
+	ControlRightClick
+	ControlLeftClick
 )

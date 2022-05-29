@@ -5,9 +5,12 @@ import (
 	"github.com/Lolodin/infclient/internal/entity"
 	"github.com/Lolodin/infclient/internal/lang"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 	"golang.org/x/text/language"
 	"image/color"
+	"log"
 )
 
 type GameSystem interface {
@@ -54,12 +57,28 @@ type State struct {
 
 func NewState(options Options, tag language.Tag) *State {
 	s := &State{}
+	s.worlds = map[string]gameInteractive{}
+	s.Controls = map[component.Control]*component.InputData{}
 	s.RenderWidth = options.RenderWidth
 	s.RenderHeight = options.RenderHeight
 	s.Title = options.Title
 	s.Lang = lang.NewTranslator()
 	s.Lang.Lang = tag
-	s.Fonts
+	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	const dpi = 72
+	mplusNormalFont, err := opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    24,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.Fonts = map[string]font.Face{"std": mplusNormalFont}
 	//Add config with lang
 	s.Lang.AddLocalizer("langs/RU.json", language.Russian)
 	ebiten.SetWindowSize(s.RenderWidth*2, s.RenderHeight*2)

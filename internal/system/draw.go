@@ -56,9 +56,11 @@ func (sys *drawSystem) Draw(s *kernel.State, screen *ebiten.Image) {
 	}
 
 	ebitenutil.DebugPrint(screen, fmt.Sprintf(
-		"TPS: %0.2f\nFPS: %0.2f",
+		"TPS: %0.2f\nFPS: %0.2f\nCursor X: %f\nCursor Y:%f",
 		ebiten.CurrentTPS(),
 		ebiten.CurrentFPS(),
+		s.CursorX,
+		s.CursorY,
 	))
 }
 

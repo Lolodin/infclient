@@ -15,7 +15,7 @@ import (
 
 type GameSystem interface {
 	GetComponents() []string
-	AddEntity(*entity.Entity)
+	AddEntity(*entity.Entity, int)
 	Update(*State)
 	Draw(*State, *ebiten.Image)
 	Load(*State)

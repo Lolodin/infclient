@@ -1,6 +1,7 @@
 package system
 
 import (
+	"github.com/Lolodin/infclient/internal/entity"
 	"github.com/Lolodin/infclient/internal/kernel"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,6 +13,7 @@ type cursorSystem struct {
 
 func NewCursorSystem(s *kernel.State) *cursorSystem {
 	sys := &cursorSystem{}
+	sys.System.Entities = map[int][]*entity.Entity{}
 
 	return sys
 }
@@ -19,10 +21,12 @@ func NewCursorSystem(s *kernel.State) *cursorSystem {
 func (sys *cursorSystem) Load(s *kernel.State) {}
 
 func (sys *cursorSystem) Update(s *kernel.State) {
-	for _, e := range sys.Entities {
+	for _, sl := range sys.Entities {
+		for _, e := range sl {
+			e.Position.X = s.CursorX
+			e.Position.Y = s.CursorY
+		}
 
-		e.Position.X = s.CursorX
-		e.Position.Y = s.CursorY
 	}
 }
 

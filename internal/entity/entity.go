@@ -7,6 +7,8 @@ type Entity struct {
 	Text        *component.TextComponent
 	Size        *component.SizeComponent
 	Interactive *component.InteractiveComponent
+	View        *component.ViewComponent
+	Layer       *component.LayerComponent
 }
 
 func NewEntity() *Entity {

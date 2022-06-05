@@ -15,13 +15,16 @@ type ButtonEntityOptions struct {
 	Text                         string
 	Color                        color.NRGBA
 	Font                         font.Face
+	Z                            int
 }
 
 func NewButtonEntity(options *ButtonEntityOptions) (*Entity, error) {
 	e := NewEntity()
 
+	e.Layer = component.NewLayerComponent(options.Z)
 	e.Position = &component.PositionComponent{X: options.X, Y: options.Y}
 	e.Size = &component.SizeComponent{Width: options.Width, Height: options.Height}
+	e.View = &component.ViewComponent{}
 	e.Interactive = component.NewInteractiveComponent()
 
 	// No text

@@ -3,12 +3,13 @@ package system
 import "github.com/Lolodin/infclient/internal/entity"
 
 type System struct {
-	Entities   []*entity.Entity
+	Entities   map[int][]*entity.Entity
 	Components []string
 }
 
-func (s *System) AddEntity(e *entity.Entity) {
-	s.Entities = append(s.Entities, e)
+// e сущность, z слой в котором отрисовывается
+func (s *System) AddEntity(e *entity.Entity, z int) {
+	s.Entities[z] = append(s.Entities[z], e)
 }
 
 func (s System) GetComponents() []string {

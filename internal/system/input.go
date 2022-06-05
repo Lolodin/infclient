@@ -2,6 +2,7 @@ package system
 
 import (
 	"github.com/Lolodin/infclient/internal/component"
+	"github.com/Lolodin/infclient/internal/entity"
 	"github.com/Lolodin/infclient/internal/kernel"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -14,6 +15,7 @@ type inputSystem struct {
 
 func NewInputSystem(s *kernel.State) *inputSystem {
 	sys := &inputSystem{}
+	sys.System.Entities = map[int][]*entity.Entity{}
 	return sys
 }
 

@@ -29,6 +29,13 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 	if err != nil {
 		panic(fmt.Sprintf("creating cursor entity: %s", err))
 	}
+	background, err := entity.NewImageEntity("./internal/resource/scroll.png")
+	background.Layer.Z = 1
+	background.Position.X += 100
+	fmt.Println(background.View.Image.Size())
+	if err != nil {
+		panic(fmt.Sprintf("creating background entity: %s", err))
+	}
 	s.MouseInputs = map[ebiten.MouseButton]component.Control{ebiten.MouseButtonLeft: component.ControlLeftClick}
 
 	buttonWidth := 200.0
@@ -46,11 +53,14 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
 		IsCentered: true,
 	})
+	startButton.Layer.Z = 2
+	startButton.View.IsDraw = false
 	if err != nil {
 		panic(fmt.Sprintf("creating title button entity: %s", err))
 	}
 
 	w.entities = []*entity.Entity{
+		background,
 		startButton,
 		cursor,
 	}

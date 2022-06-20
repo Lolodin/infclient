@@ -13,6 +13,7 @@ type TextLine struct {
 
 type TextComponent struct {
 	Lines      []TextLine
+	Content    string
 	Color      color.NRGBA
 	LineHeight int
 	Font       font.Face

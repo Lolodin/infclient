@@ -24,8 +24,20 @@ func (sys *inputSystem) Load(s *kernel.State) {}
 func (sys *inputSystem) Update(s *kernel.State) {
 	for mouseInput, control := range s.MouseInputs {
 		if inpututil.IsMouseButtonJustReleased(mouseInput) {
-			ix, iy := ebiten.CursorPosition()
-			s.SetControl(control, &component.InputData{ix, iy})
+			ix, iy := s.Camera.ScreenToWorld(ebiten.CursorPosition())
+			s.SetControl(control, &component.InputData{int(ix), int(iy)})
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+			s.Camera.Position[0] -= 1
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+			s.Camera.Position[0] += 1
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
+			s.Camera.Position[1] -= 1
+		}
+		if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyArrowDown) {
+			s.Camera.Position[1] += 1
 		}
 	}
 

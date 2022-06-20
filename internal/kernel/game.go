@@ -1,13 +1,14 @@
 package kernel
 
 import (
+	"github.com/Lolodin/infclient/fonts"
 	"github.com/Lolodin/infclient/internal/component"
 	"github.com/Lolodin/infclient/internal/entity"
 	"github.com/Lolodin/infclient/internal/lang"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
+	"golang.org/x/image/math/f64"
 	"golang.org/x/text/language"
 	"image/color"
 	"log"
@@ -41,6 +42,7 @@ type State struct {
 	worlds       map[string]gameInteractive
 	activeWorlds []string
 	Events       []interface{}
+	Camera       *Camera
 
 	Controls    map[component.Control]*component.InputData
 	MouseInputs map[ebiten.MouseButton]component.Control
@@ -57,6 +59,7 @@ type State struct {
 
 func NewState(options Options, tag language.Tag) *State {
 	s := &State{}
+	s.Camera = &Camera{ViewPort: f64.Vec2{float64(options.RenderWidth), float64(options.RenderHeight)}}
 	s.worlds = map[string]gameInteractive{}
 	s.Controls = map[component.Control]*component.InputData{}
 	s.RenderWidth = options.RenderWidth
@@ -64,7 +67,7 @@ func NewState(options Options, tag language.Tag) *State {
 	s.Title = options.Title
 	s.Lang = lang.NewTranslator()
 	s.Lang.Lang = tag
-	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
+	tt, err := opentype.Parse(fonts.Alundra)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -82,7 +85,8 @@ func NewState(options Options, tag language.Tag) *State {
 	//Add config with lang
 	s.Lang.AddLocalizer("langs/RU.json", language.Russian)
 	ebiten.SetWindowSize(s.RenderWidth*2, s.RenderHeight*2)
-	ebiten.SetWindowResizable(true)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
+
 	ebiten.SetWindowTitle(s.Title)
 
 	return s

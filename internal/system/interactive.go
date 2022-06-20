@@ -27,11 +27,9 @@ func (sys *interactiveSystem) Update(s *kernel.State) {
 	for _, sl := range sys.Entities {
 		for _, e := range sl {
 			if data, ok := s.Controls[component.ControlLeftClick]; ok {
-				fmt.Println("clac", data, e.Position, e.Size)
 				if e.IsClick(data) {
 					fmt.Println("click at entity")
 				}
-
 			}
 		}
 		s.Controls = map[component.Control]*component.InputData{}

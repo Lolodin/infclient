@@ -1,9 +1,12 @@
 package component
 
+import "github.com/hajimehoshi/ebiten/v2"
+
 type LayerComponent struct {
-	Z int
+	Image *ebiten.Image
+	Z     int
 }
 
 func NewLayerComponent(z int) *LayerComponent {
-	return &LayerComponent{z}
+	return &LayerComponent{Image: &ebiten.Image{}, Z: z}
 }

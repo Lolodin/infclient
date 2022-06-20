@@ -1,6 +1,8 @@
 package entity
 
-import "github.com/Lolodin/infclient/internal/component"
+import (
+	"github.com/Lolodin/infclient/internal/component"
+)
 
 type Entity struct {
 	Position    *component.PositionComponent

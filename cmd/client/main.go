@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	screenWidth  = 620
-	screenHeight = 540
+	screenWidth  = 700
+	screenHeight = 590
 )
 const MainMenu = "main"
 

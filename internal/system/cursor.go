@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// Система для работу с курсором
 type cursorSystem struct {
 	System
 }
@@ -30,7 +31,7 @@ func (sys *cursorSystem) Update(s *kernel.State) {
 	}
 }
 
-func (sys *cursorSystem) Draw(s *kernel.State, creen *ebiten.Image) {}
+func (sys *cursorSystem) Draw(s *kernel.State, screen *ebiten.Image) {}
 
 func (sys *cursorSystem) Enter(s *kernel.State) {
 

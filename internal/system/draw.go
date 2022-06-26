@@ -12,6 +12,8 @@ import (
 	"sort"
 )
 
+// Система отрисовки игровых объектов и тестов
+// TODO следует сделать разные системы отрисовок для меню и игровогопроцесса
 type drawSystem struct {
 	LocalImage *ebiten.Image
 	System
@@ -78,6 +80,7 @@ func (sys *drawSystem) Enter(s *kernel.State) {}
 
 func (sys *drawSystem) Exit(s *kernel.State) {}
 
+//Отрисовка в глубину, по Z оси
 func (sys *drawSystem) getEntityZLayouts() []int {
 	i := 0
 	keys := make([]int, len(sys.Entities))

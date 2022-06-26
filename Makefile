@@ -1,3 +1,3 @@
 make:
-	go build /cmd/client/main.go /bin
+	go build -o ./bin ./cmd/client/main.go
 run:

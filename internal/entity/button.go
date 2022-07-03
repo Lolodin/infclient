@@ -1,10 +1,9 @@
 package entity
 
 import (
+	"code.rocketnine.space/tslocum/messeji"
 	"github.com/Lolodin/infclient/internal/component"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
-	"image"
 	"image/color"
 )
 
@@ -24,7 +23,6 @@ func NewButtonEntity(options *ButtonEntityOptions) (*Entity, error) {
 	e.Position = &component.PositionComponent{X: options.X, Y: options.Y}
 	e.Size = &component.SizeComponent{Width: options.Width, Height: options.Height}
 	e.View = &component.ViewComponent{}
-	e.Interactive = component.NewInteractiveComponent(&component.Object{text.BoundString(options.Font, options.Text)})
 
 	// No text
 	if options.Text == "" {
@@ -36,10 +34,11 @@ func NewButtonEntity(options *ButtonEntityOptions) (*Entity, error) {
 		Color:   options.Color,
 		Font:    options.Font,
 	}
+	e.Text.TextField = messeji.NewTextField(options.Font)
+	e.Text.TextField.SetBackgroundColor(color.Alpha{A: 0})
+	e.Text.TextField.SetForegroundColor(options.Color)
+	e.Text.TextField.SetScrollBarVisible(false)
+	e.Text.TextField.SetText(options.Text)
 
 	return e, nil
-}
-
-func getTextRect(f font.Face, content string) image.Rectangle {
-	return text.BoundString(f, content)
 }

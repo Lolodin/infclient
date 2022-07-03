@@ -31,6 +31,10 @@ func (sys *interactiveSystem) Update(s *kernel.State) {
 					fmt.Println("click at entity")
 				}
 			}
+			if e.Text == nil {
+				continue
+			}
+			e.Text.TextField.SetRect(e.GetRec())
 		}
 		s.Controls = map[component.Control]*component.InputData{}
 	}

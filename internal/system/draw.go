@@ -6,7 +6,6 @@ import (
 	"github.com/Lolodin/infclient/internal/kernel"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"image"
 	"image/color"
 	"sort"
@@ -58,7 +57,8 @@ func (sys *drawSystem) Draw(s *kernel.State, screen *ebiten.Image) {
 			if e.Text == nil {
 				continue
 			}
-			text.Draw(sys.LocalImage, e.Text.Content, e.Text.Font, int(e.Position.X), int(e.Position.Y), e.Text.Color)
+
+			e.Text.TextField.Draw(sys.LocalImage)
 			s.Camera.Render(sys.LocalImage, screen)
 			//	ebitenutil.DrawRect(sys.LocalImage, s.Camera.Position[0], s.Camera.Position[1], float64(s.RenderWidth), float64(s.RenderHeight), color.NRGBA{0x00, 0x40, 0x80, 0xff})
 		}

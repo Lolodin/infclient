@@ -1,6 +1,7 @@
 package component
 
 import (
+	"code.rocketnine.space/tslocum/messeji"
 	"image/color"
 
 	"golang.org/x/image/font"
@@ -12,17 +13,10 @@ type TextLine struct {
 }
 
 type TextComponent struct {
-	Lines      []TextLine
-	Content    string
-	Color      color.NRGBA
-	LineHeight int
-	Font       font.Face
-	IsCentered bool
-	Padding    float64
-}
+	Content string
+	Color   color.NRGBA
+	Font    font.Face
 
-func NewTextComponent(text string) *TextComponent {
-	c := &TextComponent{}
-	c.Lines = append(c.Lines, TextLine{Content: text})
-	return c
+	InputField *messeji.InputField
+	TextField  *messeji.TextField
 }

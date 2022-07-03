@@ -10,14 +10,13 @@ import (
 	"image/color"
 )
 
-type titleWorld struct {
+type loginWorld struct {
 	world
 }
 
-func NewTitleWorld(s *kernel.State) *titleWorld {
-	w := &titleWorld{}
-	w.name = "main"
-
+func NewLoginWorld(s *kernel.State) *loginWorld {
+	w := &loginWorld{}
+	w.name = "login"
 	w.systems = []kernel.GameSystem{
 		system.NewDrawSystem(s),
 		system.NewInputSystem(s),
@@ -32,16 +31,15 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 	background, err := entity.NewImageEntity("./internal/resource/scroll.png")
 	background.Position.Z = 1
 	background.Position.X += 100
+
 	if err != nil {
 		panic(fmt.Sprintf("creating background entity: %s", err))
 	}
-	s.MouseInputs = map[ebiten.MouseButton]component.Control{ebiten.MouseButtonLeft: component.ControlLeftClick}
-
 	buttonWidth := 200.0
 	buttonHeight := 30.0
 	buttonYStart := 120.0
 	A, B, C, D := color.Black.RGBA()
-	loginButton, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
+	loginField, err := entity.NewButtonWithTextInputFieldEntity(&entity.ButtonEntityOptions{
 		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
 		Y:          buttonYStart,
 		Width:      buttonWidth,
@@ -52,15 +50,17 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
 		IsCentered: true,
 	})
-	loginButton.Position.Z = 2
-	loginButton.View.IsDraw = false
-	loginButton.Interactive.ClickEvent = func() {
-		s.ActivateWorlds("login")
-	}
+	loginField.Position.Z = 2
 
-	exitButton, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
-		X:          -65,
-		Y:          -65,
+	loginField.Text.InputField.SetHandleKeyboard(true)
+	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
+		fmt.Println(loginField.Text.InputField.Text())
+		return true
+	})
+
+	buffer, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
+		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
+		Y:          buttonYStart - 30,
 		Width:      buttonWidth,
 		Height:     buttonHeight,
 		Padding:    0,
@@ -69,18 +69,21 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
 		IsCentered: true,
 	})
-	exitButton.Position.Z = 2
-	exitButton.View.IsDraw = false
-	if err != nil {
-		panic(fmt.Sprintf("creating title button entity: %s", err))
-	}
+	buffer.Position.Z = 2
 
+	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
+		buffer.Text.TextField.SetText(loginField.Text.InputField.Text())
+		return true
+	})
+
+	s.MouseInputs = map[ebiten.MouseButton]component.Control{ebiten.MouseButtonLeft: component.ControlLeftClick}
 	w.entities = []*entity.Entity{
 		background,
-		loginButton,
 		cursor,
-		exitButton,
+		loginField,
+		buffer,
 	}
+
 	w.updateSystems()
 
 	return w

@@ -7,8 +7,7 @@ import (
 
 func NewImageEntity(path string) (*Entity, error) {
 	e := NewEntity()
-	e.Layer = component.NewLayerComponent(0)
-	e.Position = &component.PositionComponent{X: 0, Y: 0}
+	e.Position = &component.PositionComponent{}
 	e.Size = &component.SizeComponent{}
 	view, err := component.NewAppearanceComponent(path, "")
 	if err != nil {

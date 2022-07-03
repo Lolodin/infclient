@@ -12,6 +12,8 @@ type TextLine struct {
 	X       float64
 }
 
+//Для отрисовки диалоговых окон, кнопок меню и полей для ввода
+//TODO возможно стоит разделить на 2 отдельных компонента
 type TextComponent struct {
 	Content string
 	Color   color.NRGBA

@@ -16,10 +16,9 @@ type ButtonEntityOptions struct {
 	Z                            int
 }
 
-func NewButtonEntity(options *ButtonEntityOptions) (*Entity, error) {
+func NewButtonWithTextFieldEntity(options *ButtonEntityOptions) (*Entity, error) {
 	e := NewEntity()
-
-	e.Layer = component.NewLayerComponent(options.Z)
+	e.Interactive = component.NewInteractiveComponent()
 	e.Position = &component.PositionComponent{X: options.X, Y: options.Y}
 	e.Size = &component.SizeComponent{Width: options.Width, Height: options.Height}
 	e.View = &component.ViewComponent{}
@@ -39,6 +38,30 @@ func NewButtonEntity(options *ButtonEntityOptions) (*Entity, error) {
 	e.Text.TextField.SetForegroundColor(options.Color)
 	e.Text.TextField.SetScrollBarVisible(false)
 	e.Text.TextField.SetText(options.Text)
+
+	return e, nil
+}
+
+func NewButtonWithTextInputFieldEntity(options *ButtonEntityOptions) (*Entity, error) {
+	e := NewEntity()
+	e.Interactive = component.NewInteractiveComponent()
+	e.Position = &component.PositionComponent{X: options.X, Y: options.Y}
+	e.Size = &component.SizeComponent{Width: options.Width, Height: options.Height}
+	e.View = &component.ViewComponent{}
+
+	// No text
+	if options.Text == "" {
+		return e, nil
+	}
+
+	e.Text = &component.TextComponent{
+		Content: options.Text,
+		Color:   options.Color,
+		Font:    options.Font,
+	}
+	e.Text.InputField = messeji.NewInputField(options.Font)
+	e.Text.InputField.SetBackgroundColor(color.Alpha{A: 0})
+	e.Text.InputField.SetForegroundColor(options.Color)
 
 	return e, nil
 }

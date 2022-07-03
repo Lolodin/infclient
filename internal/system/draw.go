@@ -53,12 +53,18 @@ func (sys *drawSystem) Draw(s *kernel.State, screen *ebiten.Image) {
 
 			}
 
-			// No text? nothing to do
 			if e.Text == nil {
+				s.Camera.Render(sys.LocalImage, screen)
 				continue
 			}
+			// No text? nothing to do
+			if e.Text.TextField != nil {
+				e.Text.TextField.Draw(sys.LocalImage)
+			}
+			if e.Text.InputField != nil {
+				e.Text.InputField.Draw(sys.LocalImage)
+			}
 
-			e.Text.TextField.Draw(sys.LocalImage)
 			s.Camera.Render(sys.LocalImage, screen)
 			//	ebitenutil.DrawRect(sys.LocalImage, s.Camera.Position[0], s.Camera.Position[1], float64(s.RenderWidth), float64(s.RenderHeight), color.NRGBA{0x00, 0x40, 0x80, 0xff})
 		}
@@ -76,7 +82,9 @@ func (sys *drawSystem) Draw(s *kernel.State, screen *ebiten.Image) {
 
 }
 
-func (sys *drawSystem) Enter(s *kernel.State) {}
+func (sys *drawSystem) Enter(s *kernel.State) {
+
+}
 
 func (sys *drawSystem) Exit(s *kernel.State) {}
 

@@ -74,7 +74,7 @@ func (w *world) updateSystems() {
 
 			// The entity is suitable and we can add it
 			if hasComponents {
-				system.AddEntity(entity, entity.Layer.Z)
+				system.AddEntity(entity, entity.Position.Z)
 			}
 
 			// Reset for next iteration

@@ -6,11 +6,11 @@ import (
 )
 
 type Entity struct {
-	Position *component.PositionComponent
-	Text     *component.TextComponent
-	Size     *component.SizeComponent
-	View     *component.ViewComponent
-	Layer    *component.LayerComponent
+	Position    *component.PositionComponent
+	Text        *component.TextComponent
+	Size        *component.SizeComponent
+	View        *component.ViewComponent
+	Interactive *component.InteractiveComponent
 }
 
 func NewEntity() *Entity {

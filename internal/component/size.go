@@ -1,5 +1,6 @@
 package component
 
+// Размер сущности
 type SizeComponent struct {
 	Width, Height float64
 }

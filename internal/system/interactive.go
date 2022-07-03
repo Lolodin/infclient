@@ -1,7 +1,6 @@
 package system
 
 import (
-	"fmt"
 	"github.com/Lolodin/infclient/internal/component"
 	"github.com/Lolodin/infclient/internal/entity"
 	"github.com/Lolodin/infclient/internal/kernel"
@@ -28,13 +27,23 @@ func (sys *interactiveSystem) Update(s *kernel.State) {
 		for _, e := range sl {
 			if data, ok := s.Controls[component.ControlLeftClick]; ok {
 				if e.IsClick(data) {
-					fmt.Println("click at entity")
+					if e.Interactive != nil {
+						e.Interactive.ClickEvent()
+					}
+
 				}
 			}
 			if e.Text == nil {
 				continue
 			}
-			e.Text.TextField.SetRect(e.GetRec())
+			if e.Text.TextField != nil {
+				e.Text.TextField.SetRect(e.GetRec())
+			}
+			if e.Text.InputField != nil {
+				e.Text.InputField.SetRect(e.GetRec())
+				e.Text.InputField.Update()
+			}
+
 		}
 		s.Controls = map[component.Control]*component.InputData{}
 	}

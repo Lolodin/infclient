@@ -24,6 +24,7 @@ func main() {
 	}, language.Russian)
 
 	game.LoadWorld(interactive.NewTitleWorld(game))
+	game.LoadWorld(interactive.NewLoginWorld(game))
 	game.ActivateWorlds(MainMenu)
 	err := ebiten.RunGame(game)
 	if err != nil {

@@ -7,7 +7,7 @@ type System struct {
 	Components []string
 }
 
-// e сущность, z слой в котором отрисовывается
+// z слой в котором отрисовывается
 func (s *System) AddEntity(e *entity.Entity, z int) {
 	s.Entities[z] = append(s.Entities[z], e)
 }

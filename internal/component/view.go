@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+//Для отрисовки компонента
 type ViewComponent struct {
 	Image                      *ebiten.Image
 	Frame, Duration            int
@@ -27,15 +28,15 @@ type ViewSequence struct {
 	Direction  string
 }
 
-// Load files, format the data and then create an Appearance component
-// Pass an empty string as the second param if an animation isn't required
-func NewAppearanceComponent(imagePath, animationPath string) (*ViewComponent, error) {
+// Загружает ресурсы для отображения компонента
+// Если анимация не нужна, второй компонент можно оставить пустым
+func NewViewComponent(imagePath, animationPath string) (*ViewComponent, error) {
 	c := &ViewComponent{
 		IsDraw:    true,
 		Sequences: map[string]*ViewSequence{},
 	}
 
-	// Load image
+	// Загрузка картинок
 	file, err := os.Open(imagePath)
 	defer file.Close()
 	if err != nil {
@@ -51,7 +52,7 @@ func NewAppearanceComponent(imagePath, animationPath string) (*ViewComponent, er
 	}
 	c.Image = ebiten.NewImageFromImage(rawImg)
 
-	// No animation required
+	// Без Анимации
 	if animationPath == "" {
 		w, h := c.Image.Size()
 		c.Frames = []*image.Rectangle{{
@@ -61,7 +62,7 @@ func NewAppearanceComponent(imagePath, animationPath string) (*ViewComponent, er
 		return c, nil
 	}
 
-	// Animation required
+	// Логика Анимации
 	anim, err := newAnimationFromFile(animationPath)
 	if err != nil {
 		return c, fmt.Errorf("loading appearance animation: %s", err)
@@ -75,8 +76,7 @@ func NewAppearanceComponent(imagePath, animationPath string) (*ViewComponent, er
 		c.Frames = append(c.Frames, &rect)
 	}
 	for _, t := range anim.Meta.FrameTags {
-		// Treat tag name ending in '_loop' as meaning it should loop
-		// There's no native way to do this in Aseprite
+		// Логика для работы с Aseprite
 		nameSections := strings.Split(t.Name, "_")
 		shouldLoop := nameSections[len(nameSections)-1] == "loop"
 		name := nameSections[0]
@@ -86,7 +86,7 @@ func NewAppearanceComponent(imagePath, animationPath string) (*ViewComponent, er
 			ShouldLoop: shouldLoop,
 			Direction:  t.Direction,
 		}
-		// Set first sequence as the default
+		// Sequence as the default
 		if c.Sequence == "" {
 			c.Sequence = name
 		}

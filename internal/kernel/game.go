@@ -17,6 +17,8 @@ import (
 type GameSystem interface {
 	GetComponents() []string
 	AddEntity(*entity.Entity, int)
+	AddEntityInRealTime(e *entity.Entity, z int)
+	DeleteEntity(*entity.Entity)
 	Update(*State)
 	Draw(*State, *ebiten.Image)
 	Load(*State)
@@ -37,6 +39,15 @@ type Options struct {
 	Title                     string
 }
 
+type Auth interface {
+	SetLogin(str string)
+	SetPassword(str string)
+	SetToken(str string)
+	GetLogin() string
+	GetToken() string
+	GetPassword() string
+}
+
 type State struct {
 	Options
 	worlds       map[string]gameInteractive
@@ -55,6 +66,7 @@ type State struct {
 
 	Colors map[string]color.NRGBA
 	Lang   *lang.Translator
+	Auth   Auth
 }
 
 func NewState(options Options, tag language.Tag) *State {
@@ -64,6 +76,7 @@ func NewState(options Options, tag language.Tag) *State {
 	s.Controls = map[component.Control]*component.InputData{}
 	s.RenderWidth = options.RenderWidth
 	s.RenderHeight = options.RenderHeight
+	s.Auth = &AuthData{}
 	s.Title = options.Title
 	s.Lang = lang.NewTranslator()
 	s.Lang.Lang = tag

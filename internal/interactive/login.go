@@ -54,8 +54,11 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 
 	loginField.Text.InputField.SetHandleKeyboard(true)
 	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
-		fmt.Println(loginField.Text.InputField.Text())
-		return true
+		if loginField.Text.InputField.IsActive {
+			fmt.Println(loginField.Text.InputField.Text())
+			return true
+		}
+		return false
 	})
 
 	buffer, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
@@ -64,17 +67,42 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		Width:      buttonWidth,
 		Height:     buttonHeight,
 		Padding:    0,
-		Text:       s.Lang.TransWithOut("login"),
+		Text:       s.Lang.TransWithOut("enter_login"),
 		Font:       s.Fonts["std"],
 		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
 		IsCentered: true,
 	})
 	buffer.Position.Z = 2
 
-	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
-		buffer.Text.TextField.SetText(loginField.Text.InputField.Text())
-		return true
+	buffer2, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
+		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
+		Y:          buttonYStart - 30,
+		Width:      buttonWidth,
+		Height:     buttonHeight,
+		Padding:    0,
+		Text:       s.Lang.TransWithOut("enter_pass"),
+		Font:       s.Fonts["std"],
+		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
+		IsCentered: true,
 	})
+	buffer2.Position.Z = 0
+
+	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
+		if loginField.Text.InputField.IsActive {
+			s.Auth.SetLogin(loginField.Text.InputField.Text())
+			for _, gameSystem := range w.systems {
+				gameSystem.DeleteEntity(loginField)
+				gameSystem.DeleteEntity(buffer)
+			}
+			buffer2.Position.Z = 2
+			return true
+		}
+
+		return false
+	})
+	loginField.Interactive.ClickEvent = func() {
+		loginField.Text.InputField.IsActive = !loginField.Text.InputField.IsActive
+	}
 
 	s.MouseInputs = map[ebiten.MouseButton]component.Control{ebiten.MouseButtonLeft: component.ControlLeftClick}
 	w.entities = []*entity.Entity{
@@ -82,6 +110,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		cursor,
 		loginField,
 		buffer,
+		buffer2,
 	}
 
 	w.updateSystems()

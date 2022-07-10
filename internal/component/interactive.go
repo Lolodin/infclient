@@ -8,10 +8,12 @@ import "fmt"
 type InteractiveComponent struct {
 	ClickEvent
 }
+
+//Обычно используется замыкание для функционала
 type ClickEvent func()
 
 func NewInteractiveComponent() *InteractiveComponent {
 	return &InteractiveComponent{func() {
-		fmt.Println('x')
+		fmt.Println("implement me")
 	}}
 }

@@ -41,7 +41,9 @@ func (sys *interactiveSystem) Update(s *kernel.State) {
 			}
 			if e.Text.InputField != nil {
 				e.Text.InputField.SetRect(e.GetRec())
-				e.Text.InputField.Update()
+				if e.Text.InputField.IsActive {
+					e.Text.InputField.Update()
+				}
 			}
 
 		}

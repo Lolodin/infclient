@@ -19,6 +19,20 @@ type TextComponent struct {
 	Color   color.NRGBA
 	Font    font.Face
 
-	InputField *messeji.InputField
+	InputField *Input
 	TextField  *messeji.TextField
+}
+
+type Input struct {
+	IsActive bool
+	*messeji.InputField
+}
+
+func NewInput(face font.Face) *Input {
+	i := &Input{}
+
+	i.InputField = messeji.NewInputField(face)
+	i.InputField.SetAutoHideScrollBar(false)
+	i.InputField.SetScrollBarVisible(false)
+	return i
 }

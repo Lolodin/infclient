@@ -59,7 +59,7 @@ func NewButtonWithTextInputFieldEntity(options *ButtonEntityOptions) (*Entity, e
 		Color:   options.Color,
 		Font:    options.Font,
 	}
-	e.Text.InputField = messeji.NewInputField(options.Font)
+	e.Text.InputField = component.NewInput(options.Font)
 	e.Text.InputField.SetBackgroundColor(color.Alpha{A: 0})
 	e.Text.InputField.SetForegroundColor(options.Color)
 

@@ -62,7 +62,10 @@ func (sys *drawSystem) Draw(s *kernel.State, screen *ebiten.Image) {
 				e.Text.TextField.Draw(sys.LocalImage)
 			}
 			if e.Text.InputField != nil {
-				e.Text.InputField.Draw(sys.LocalImage)
+				if e.Text.InputField.IsActive {
+					e.Text.InputField.Draw(sys.LocalImage)
+				}
+
 			}
 
 			s.Camera.Render(sys.LocalImage, screen)

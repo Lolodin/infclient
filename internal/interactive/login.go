@@ -91,10 +91,17 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		if loginField.Text.InputField.IsActive {
 			s.Auth.SetLogin(loginField.Text.InputField.Text())
 			for _, gameSystem := range w.systems {
-				gameSystem.DeleteEntity(loginField)
-				gameSystem.DeleteEntity(buffer)
+				if ok := gameSystem.Remove(loginField); ok {
+					fmt.Println("delete")
+				}
 			}
-			buffer2.Position.Z = 2
+			for _, gameSystem := range w.systems {
+				if ok := gameSystem.Remove(buffer); ok {
+					fmt.Println("delete")
+				}
+			}
+
+			buffer2.Position.Z = 2 //Сделать тригер который перебрасывает в нужный слой
 			return true
 		}
 

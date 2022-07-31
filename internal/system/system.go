@@ -2,7 +2,6 @@ package system
 
 import (
 	"github.com/Lolodin/infclient/internal/entity"
-	"reflect"
 )
 
 type System struct {
@@ -15,41 +14,18 @@ func (s *System) AddEntity(e *entity.Entity, z int) {
 	s.Entities[z] = append(s.Entities[z], e)
 }
 
-func (s *System) DeleteEntity(e *entity.Entity) {
+func (s System) GetComponents() []string {
+	return s.Components
+}
+
+func (s *System) Remove(e *entity.Entity) bool {
 	for k, entities := range s.Entities {
 		for i, e2 := range entities {
 			if e2 == e {
 				s.Entities[k] = append(s.Entities[k][:i], s.Entities[k][i+1:]...)
+				return true
 			}
-
 		}
 	}
-}
-
-func (s *System) AddEntityInRealTime(e *entity.Entity, z int) {
-	hasComponents := false
-	entityReflection := reflect.Indirect(reflect.ValueOf(e))
-	components := s.GetComponents()
-
-	// A system w/o components should have no entities
-	if len(components) == 0 {
-		hasComponents = false
-	}
-
-	// Check if entity has required components
-	for _, component := range components {
-		field := entityReflection.FieldByName(component)
-		if field.IsNil() {
-			hasComponents = false
-		}
-	}
-
-	// The entity is suitable and we can add it
-	if hasComponents {
-		s.AddEntity(e, z)
-	}
-}
-
-func (s System) GetComponents() []string {
-	return s.Components
+	return false
 }

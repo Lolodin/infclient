@@ -17,8 +17,7 @@ import (
 type GameSystem interface {
 	GetComponents() []string
 	AddEntity(*entity.Entity, int)
-	AddEntityInRealTime(e *entity.Entity, z int)
-	DeleteEntity(*entity.Entity)
+	Remove(*entity.Entity) bool
 	Update(*State)
 	Draw(*State, *ebiten.Image)
 	Load(*State)

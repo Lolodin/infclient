@@ -13,7 +13,7 @@ type inputDataSystem struct {
 
 func NewInputDataSystem(s *kernel.State) *interactiveSystem {
 	sys := &interactiveSystem{}
-	sys.System.Entities = map[int][]*entity.Entity{}
+	sys.System.Entities = []*entity.Entity{}
 	sys.Components = []string{
 		"Text",
 	}
@@ -23,10 +23,8 @@ func NewInputDataSystem(s *kernel.State) *interactiveSystem {
 func (sys *inputDataSystem) Load(s *kernel.State) {}
 
 func (sys *inputDataSystem) Update(s *kernel.State) {
-	for _, sl := range sys.Entities {
-		for _, e := range sl {
-			fmt.Println(e)
-		}
+	for _, e := range sys.Entities {
+		fmt.Println(e)
 	}
 }
 

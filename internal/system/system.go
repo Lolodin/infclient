@@ -5,13 +5,13 @@ import (
 )
 
 type System struct {
-	Entities   map[int][]*entity.Entity
+	Entities   []*entity.Entity
 	Components []string
 }
 
 // z слой в котором отрисовывается
-func (s *System) AddEntity(e *entity.Entity, z int) {
-	s.Entities[z] = append(s.Entities[z], e)
+func (s *System) AddEntity(e *entity.Entity) {
+	s.Entities = append(s.Entities, e)
 }
 
 func (s System) GetComponents() []string {
@@ -19,12 +19,10 @@ func (s System) GetComponents() []string {
 }
 
 func (s *System) Remove(e *entity.Entity) bool {
-	for k, entities := range s.Entities {
-		for i, e2 := range entities {
-			if e2 == e {
-				s.Entities[k] = append(s.Entities[k][:i], s.Entities[k][i+1:]...)
-				return true
-			}
+	for i, entity := range s.Entities {
+		if entity == e {
+			s.Entities = append(s.Entities[:i], s.Entities[i+1:]...)
+			return true
 		}
 	}
 	return false

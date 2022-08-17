@@ -17,9 +17,9 @@ type titleWorld struct {
 func NewTitleWorld(s *kernel.State) *titleWorld {
 	w := &titleWorld{}
 	w.name = "main"
-
+	observ := &system.SystemDrawAdapter{Entities: map[int][]*entity.Entity{}}
 	w.systems = []kernel.GameSystem{
-		system.NewDrawSystem(s),
+		system.NewDrawSystem(s, observ),
 		system.NewInputSystem(s),
 		system.NewCursorSystem(s),
 		system.NewInteractiveSystem(s),
@@ -29,7 +29,7 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 	if err != nil {
 		panic(fmt.Sprintf("creating cursor entity: %s", err))
 	}
-	background, err := entity.NewImageEntity("./internal/resource/scroll.png")
+	background, err := entity.NewImageEntity("./internal/resource/scroll.png", observ)
 	background.Position.Z = 1
 	background.Position.X += 100
 	if err != nil {
@@ -53,6 +53,7 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 		IsCentered: true,
 	})
 	loginButton.Position.Z = 2
+	loginButton.Position.Observer = observ
 	loginButton.View.IsDraw = false
 	loginButton.Interactive.ClickEvent = func() {
 		s.ActivateWorlds("login")
@@ -70,6 +71,7 @@ func NewTitleWorld(s *kernel.State) *titleWorld {
 		IsCentered: true,
 	})
 	exitButton.Position.Z = 2
+	exitButton.Position.Observer = observ
 	exitButton.View.IsDraw = false
 	if err != nil {
 		panic(fmt.Sprintf("creating title button entity: %s", err))

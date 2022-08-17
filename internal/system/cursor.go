@@ -14,7 +14,7 @@ type cursorSystem struct {
 
 func NewCursorSystem(s *kernel.State) *cursorSystem {
 	sys := &cursorSystem{}
-	sys.System.Entities = map[int][]*entity.Entity{}
+	sys.System.Entities = []*entity.Entity{}
 
 	return sys
 }
@@ -22,11 +22,10 @@ func NewCursorSystem(s *kernel.State) *cursorSystem {
 func (sys *cursorSystem) Load(s *kernel.State) {}
 
 func (sys *cursorSystem) Update(s *kernel.State) {
-	for _, sl := range sys.Entities {
-		for _, e := range sl {
-			e.Position.X = s.CursorX
-			e.Position.Y = s.CursorY
-		}
+	for _, e := range sys.Entities {
+
+		e.Position.X = s.CursorX
+		e.Position.Y = s.CursorY
 
 	}
 }

@@ -15,7 +15,7 @@ type inputSystem struct {
 
 func NewInputSystem(s *kernel.State) *inputSystem {
 	sys := &inputSystem{}
-	sys.System.Entities = map[int][]*entity.Entity{}
+	sys.System.Entities = []*entity.Entity{}
 	return sys
 }
 

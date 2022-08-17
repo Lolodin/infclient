@@ -5,9 +5,9 @@ import (
 	"github.com/Lolodin/infclient/internal/component"
 )
 
-func NewImageEntity(path string) (*Entity, error) {
+func NewImageEntity(path string, observer component.Observer) (*Entity, error) {
 	e := NewEntity()
-	e.Position = &component.PositionComponent{}
+	e.Position = &component.PositionComponent{Observer: observer}
 	e.Size = &component.SizeComponent{}
 	view, err := component.NewViewComponent(path, "")
 	if err != nil {

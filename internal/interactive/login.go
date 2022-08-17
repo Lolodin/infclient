@@ -17,8 +17,9 @@ type loginWorld struct {
 func NewLoginWorld(s *kernel.State) *loginWorld {
 	w := &loginWorld{}
 	w.name = "login"
+	observ := &system.SystemDrawAdapter{Entities: map[int][]*entity.Entity{}}
 	w.systems = []kernel.GameSystem{
-		system.NewDrawSystem(s),
+		system.NewDrawSystem(s, observ),
 		system.NewInputSystem(s),
 		system.NewCursorSystem(s),
 		system.NewInteractiveSystem(s),
@@ -28,7 +29,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 	if err != nil {
 		panic(fmt.Sprintf("creating cursor entity: %s", err))
 	}
-	background, err := entity.NewImageEntity("./internal/resource/scroll.png")
+	background, err := entity.NewImageEntity("./internal/resource/scroll.png", observ)
 	background.Position.Z = 1
 	background.Position.X += 100
 
@@ -50,6 +51,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
 		IsCentered: true,
 	})
+	loginField.Position.Observer = observ
 	loginField.Position.Z = 2
 
 	loginField.Text.InputField.SetHandleKeyboard(true)
@@ -73,6 +75,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		IsCentered: true,
 	})
 	buffer.Position.Z = 2
+	buffer.Position.Observer = observ
 
 	buffer2, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
 		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
@@ -85,7 +88,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
 		IsCentered: true,
 	})
-	buffer2.Position.Z = 0
+	buffer2.Position.Observer = observ
 
 	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
 		if loginField.Text.InputField.IsActive {
@@ -101,7 +104,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 				}
 			}
 
-			buffer2.Position.Z = 2 //Сделать тригер который перебрасывает в нужный слой
+			buffer2.Position.Update(2) //Сделать тригер который перебрасывает в нужный слой
 			return true
 		}
 

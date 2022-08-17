@@ -13,7 +13,7 @@ type interactiveSystem struct {
 
 func NewInteractiveSystem(s *kernel.State) *interactiveSystem {
 	sys := &interactiveSystem{}
-	sys.System.Entities = map[int][]*entity.Entity{}
+	sys.System.Entities = []*entity.Entity{}
 	sys.Components = []string{
 		"Interactive",
 	}
@@ -23,30 +23,29 @@ func NewInteractiveSystem(s *kernel.State) *interactiveSystem {
 func (sys *interactiveSystem) Load(s *kernel.State) {}
 
 func (sys *interactiveSystem) Update(s *kernel.State) {
-	for _, sl := range sys.Entities {
-		for _, e := range sl {
-			if data, ok := s.Controls[component.ControlLeftClick]; ok {
-				if e.IsClick(data) {
-					if e.Interactive != nil {
-						e.Interactive.ClickEvent()
-					}
+	for _, e := range sys.Entities {
 
+		if data, ok := s.Controls[component.ControlLeftClick]; ok {
+			if e.IsClick(data) {
+				if e.Interactive != nil {
+					e.Interactive.ClickEvent()
 				}
-			}
-			if e.Text == nil {
-				continue
-			}
-			if e.Text.TextField != nil {
-				e.Text.TextField.SetRect(e.GetRec())
-			}
-			if e.Text.InputField != nil {
-				e.Text.InputField.SetRect(e.GetRec())
-				if e.Text.InputField.IsActive {
-					e.Text.InputField.Update()
-				}
-			}
 
+			}
 		}
+		if e.Text == nil {
+			continue
+		}
+		if e.Text.TextField != nil {
+			e.Text.TextField.SetRect(e.GetRec())
+		}
+		if e.Text.InputField != nil {
+			e.Text.InputField.SetRect(e.GetRec())
+			if e.Text.InputField.IsActive {
+				e.Text.InputField.Update()
+			}
+		}
+
 		s.Controls = map[component.Control]*component.InputData{}
 	}
 }

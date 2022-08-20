@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/Lolodin/infclient/internal/interactive"
 	"github.com/Lolodin/infclient/internal/kernel"
+	"github.com/Lolodin/infclient/internal/scene"
 	"github.com/hajimehoshi/ebiten/v2"
 	_ "github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/text/language"
@@ -23,8 +23,8 @@ func main() {
 		RenderWidth:  screenWidth,
 	}, language.Russian)
 
-	game.LoadWorld(interactive.NewTitleWorld(game))
-	game.LoadWorld(interactive.NewLoginWorld(game))
+	game.LoadWorld(scene.NewTitleWorld(game))
+	game.LoadWorld(scene.NewLoginWorld(game))
 	game.ActivateWorlds(MainMenu)
 	err := ebiten.RunGame(game)
 	if err != nil {

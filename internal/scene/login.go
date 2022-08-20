@@ -1,4 +1,4 @@
-package interactive
+package scene
 
 import (
 	"fmt"
@@ -8,6 +8,7 @@ import (
 	"github.com/Lolodin/infclient/internal/system"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
+	"time"
 )
 
 type loginWorld struct {
@@ -55,13 +56,6 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 	loginField.Position.Z = 2
 
 	loginField.Text.InputField.SetHandleKeyboard(true)
-	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
-		if loginField.Text.InputField.IsActive {
-			fmt.Println(loginField.Text.InputField.Text())
-			return true
-		}
-		return false
-	})
 
 	buffer, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
 		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
@@ -77,6 +71,20 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 	buffer.Position.Z = 2
 	buffer.Position.Observer = observ
 
+	passField, err := entity.NewButtonWithTextInputFieldEntity(&entity.ButtonEntityOptions{
+		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
+		Y:          buttonYStart,
+		Width:      buttonWidth,
+		Height:     buttonHeight,
+		Padding:    0,
+		Text:       s.Lang.TransWithOut("login"),
+		Font:       s.Fonts["std"],
+		Color:      color.NRGBA{uint8(A), uint8(B), uint8(C), uint8(D)},
+		IsCentered: true,
+	})
+	passField.Position.Observer = observ
+	passField.Position.Z = 0
+
 	buffer2, err := entity.NewButtonWithTextFieldEntity(&entity.ButtonEntityOptions{
 		X:          (float64(s.RenderWidth) / 2.1) - (buttonWidth / 2),
 		Y:          buttonYStart - 30,
@@ -90,7 +98,9 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 	})
 	buffer2.Position.Observer = observ
 
+	//
 	loginField.Text.InputField.SetSelectedFunc(func() (accept bool) {
+		fmt.Printf("%p лог", loginField)
 		if loginField.Text.InputField.IsActive {
 			s.Auth.SetLogin(loginField.Text.InputField.Text())
 			for _, gameSystem := range w.systems {
@@ -104,7 +114,16 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 				}
 			}
 
-			buffer2.Position.Update(2) //Сделать тригер который перебрасывает в нужный слой
+			buffer2.Position.Update(2) //Сделать тригер который перебрасывает в нужный слой\
+			passField.Position.Update(2)
+			go func() {
+				time.Sleep(100 * time.Millisecond)
+				passField.Text.InputField.IsActive = true
+				passField.Text.InputField.SetHandleKeyboard(true)
+
+			}()
+			loginField = nil
+			fmt.Println(s.Auth.GetLogin())
 			return true
 		}
 
@@ -114,6 +133,26 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		loginField.Text.InputField.IsActive = !loginField.Text.InputField.IsActive
 	}
 
+	passField.Text.InputField.SetSelectedFunc(func() (accept bool) {
+		fmt.Printf("%p пасс", passField)
+		if passField.Text.InputField.IsActive && loginField == nil {
+			s.Auth.SetPassword(passField.Text.InputField.Text())
+			for _, gameSystem := range w.systems {
+				if ok := gameSystem.Remove(passField); ok {
+					fmt.Println("delete pas")
+				}
+			}
+			for _, gameSystem := range w.systems {
+				if ok := gameSystem.Remove(buffer2); ok {
+					fmt.Println("delete pass")
+				}
+			}
+
+			return true
+		}
+		return false
+	})
+
 	s.MouseInputs = map[ebiten.MouseButton]component.Control{ebiten.MouseButtonLeft: component.ControlLeftClick}
 	w.entities = []*entity.Entity{
 		background,
@@ -121,6 +160,7 @@ func NewLoginWorld(s *kernel.State) *loginWorld {
 		loginField,
 		buffer,
 		buffer2,
+		passField,
 	}
 
 	w.updateSystems()

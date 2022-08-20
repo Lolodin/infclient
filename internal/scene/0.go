@@ -1,4 +1,4 @@
-package interactive
+package scene
 
 import (
 	"github.com/Lolodin/infclient/internal/entity"
@@ -80,5 +80,11 @@ func (w *world) updateSystems() {
 			// Reset for next iteration
 			hasComponents = true
 		}
+	}
+}
+
+func (w *world) AddEntity(e *entity.Entity) {
+	for _, s := range w.systems {
+		s.AddEntity(e)
 	}
 }
